@@ -6,7 +6,6 @@ export async function streamTTS(text: string, ws: WebSocket) {
     model: "gpt-4o-mini-tts",
     voice: "alloy",
     input: text,
-    stream: true,
   });
 
   for await (const chunk of response) {
