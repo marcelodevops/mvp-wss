@@ -4,9 +4,7 @@ export async function createSTTStream(
   onPartial: (text: string) => void
 ) {
   const stream = await openai.audio.transcriptions.create({
-    file: null as any, // realtime input
     model: "gpt-4o-transcribe",
-    response_format: "verbose_json",
     stream: true,
   });
 
@@ -24,6 +22,6 @@ export async function createSTTStream(
     },
     close() {
       stream.end();
-    }
+    },
   };
 }
