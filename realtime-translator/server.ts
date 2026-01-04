@@ -55,4 +55,13 @@ wss.on("connection", async (ws) => {
   });
 });
 
+type SessionState = {
+  phraseBuffer: string;
+  lastSpeech: number;
+  currentSpeaker: "A" | "B";
+  speakerLang: {
+    A: string;
+    B: string;
+  };
+};
 console.log("🔥 Server running on ws://localhost:8080");
