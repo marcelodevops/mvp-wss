@@ -3,37 +3,77 @@ import { useTranslationSocket } from "./useTranslationSocket";
 import { useMicrophoneStream } from "./useMicrophoneStream";
 
 export default function App() {
-  const { sendPCMChunk, partial, translated } =
-    useTranslationSocket();
+  const {
+    startSpeaking,
+    sendPCMChunk,
+    partialA,
+    partialB,
+    translated,
+  } = useTranslationSocket();
+
   const mic = useMicrophoneStream(sendPCMChunk);
 
+  function handlePressIn(speaker: "A" | "B") {
+    startSpeaking(speaker);
+    mic.start();
+  }
+
+  function handlePressOut() {
+    mic.stop();
+  }
+
   return (
-    <View style={{ flex: 1, padding: 24, justifyContent: "center" }}>
-      <Text style={{ fontSize: 18 }}>You (live):</Text>
-      <Text style={{ fontSize: 22 }}>{partial}</Text>
+    <View
+      style={{
+        flex: 1,
+        padding: 24,
+        justifyContent: "space-between",
+      }}
+    >
+      {/* Speaker A */}
+      <View>
+        <Text style={{ fontSize: 18 }}>🇺🇸 Speaker A</Text>
+        <Text style={{ fontSize: 20 }}>{partialA}</Text>
 
-      <Text style={{ fontSize: 18, marginTop: 24 }}>
-        Translated:
-      </Text>
-      <Text style={{ fontSize: 24, fontWeight: "600" }}>
-        {translated}
-      </Text>
+        <Pressable
+          onPressIn={() => handlePressIn("A")}
+          onPressOut={handlePressOut}
+          style={{
+            marginTop: 12,
+            backgroundColor: "#111",
+            padding: 16,
+            borderRadius: 12,
+          }}
+        >
+          <Text style={{ color: "#fff" }}>Hold to Talk</Text>
+        </Pressable>
+      </View>
 
-      <Pressable
-        onPressIn={mic.start}
-        onPressOut={mic.stop}
-        style={{
-          marginTop: 40,
-          backgroundColor: "#000",
-          padding: 22,
-          borderRadius: 100,
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "#fff", fontSize: 18 }}>
-          Hold to Talk
+      {/* Translation */}
+      <View style={{ alignItems: "center" }}>
+        <Text style={{ fontSize: 22, fontWeight: "600" }}>
+          {translated}
         </Text>
-      </Pressable>
+      </View>
+
+      {/* Speaker B */}
+      <View>
+        <Text style={{ fontSize: 18 }}>🇪🇸 Speaker B</Text>
+        <Text style={{ fontSize: 20 }}>{partialB}</Text>
+
+        <Pressable
+          onPressIn={() => handlePressIn("B")}
+          onPressOut={handlePressOut}
+          style={{
+            marginTop: 12,
+            backgroundColor: "#111",
+            padding: 16,
+            borderRadius: 12,
+          }}
+        >
+          <Text style={{ color: "#fff" }}>Hold to Talk</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
