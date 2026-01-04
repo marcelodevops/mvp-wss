@@ -3,7 +3,9 @@ import { playAudioChunk } from "./audioPlayer";
 
 export function useTranslationSocket() {
   const ws = useRef<WebSocket | null>(null);
-  const [partial, setPartial] = useState("");
+
+  const [partialA, setPartialA] = useState("");
+  const [partialB, setPartialB] = useState("");
   const [translated, setTranslated] = useState("");
 
   useEffect(() => {
@@ -13,7 +15,9 @@ export function useTranslationSocket() {
       const msg = JSON.parse(event.data);
 
       if (msg.type === "partial_transcript") {
-        setPartial(msg.text);
+        msg.speaker === "A"
+          ? setPartialA(msg.text)
+          : setPartialB(msg.text);
       }
 
       if (msg.type === "translated_text") {
@@ -28,16 +32,29 @@ export function useTranslationSocket() {
     return () => ws.current?.close();
   }, []);
 
+  function startSpeaking(speaker: "A" | "B") {
+    ws.current?.send(
+      JSON.stringify({
+        type: "start_speaking",
+        speaker,
+      })
+    );
+  }
+
   function sendPCMChunk(base64: string) {
     ws.current?.send(
       JSON.stringify({
         type: "audio_chunk",
-        format: "pcm16",
-        sampleRate: 16000,
         audio: base64,
       })
     );
   }
 
-  return { sendPCMChunk, partial, translated };
+  return {
+    startSpeaking,
+    sendPCMChunk,
+    partialA,
+    partialB,
+    translated,
+  };
 }
