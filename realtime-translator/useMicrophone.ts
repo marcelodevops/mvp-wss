@@ -1,5 +1,6 @@
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
+import * as fs from "expo-file-system/legacy"
 
 export function useMicrophone(sendAudioChunk: (b64: string) => void) {
   let recording: Audio.Recording | null = null;
@@ -19,15 +20,15 @@ export function useMicrophone(sendAudioChunk: (b64: string) => void) {
         extension: ".wav",
         sampleRate: 16000,
         numberOfChannels: 1,
-        audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_PCM_16BIT,
-        outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_WAV,
+        outputFormat: Audio.AndroidOutputFormat.DEFAULT,
+        audioEncoder: Audio.AndroidAudioEncoder.DEFAULT,
         bitRate: 128000,
       },
       ios: {
         extension: ".wav",
         sampleRate: 16000,
         numberOfChannels: 1,
-        audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
+        audioQuality: Audio.IOSAudioQuality.HIGH,
         bitRate: 128000,
         linearPCMBitDepth: 16,
         linearPCMIsBigEndian: false,
@@ -49,7 +50,7 @@ export function useMicrophone(sendAudioChunk: (b64: string) => void) {
     if (!uri) return;
 
     const base64 = await FileSystem.readAsStringAsync(uri, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: fs.EncodingType.Base64,
     });
 
     sendAudioChunk(base64);
