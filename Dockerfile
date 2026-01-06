@@ -15,7 +15,7 @@ RUN npm install
 RUN npm install --save-dev typescript @types/node
 
 # Copy the rest of the application source code
-COPY . .
+COPY realtime-translator/. .
 
 # Build TypeScript
 RUN npm run build || npx tsc
