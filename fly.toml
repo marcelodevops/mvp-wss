@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for mvp-wss on 2026-01-06T01:16:42Z
+# fly.toml app configuration file generated for mvp-wss on 2026-01-06T01:32:04Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'mvp-wss'
-primary_region = 'dfw'
+primary_region = 'iad'
 
 [build]
 
