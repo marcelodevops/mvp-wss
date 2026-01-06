@@ -8,14 +8,13 @@ export async function streamTTS(text: string, ws: WebSocket) {
     input: text,
   });
 
-  for await (const chunk of response) {
-    if (chunk.type === "audio") {
-      ws.send(
-        JSON.stringify({
-          type: "tts_audio_chunk",
-          audio: chunk.data.toString("base64"),
-        })
-      );
-    }
-  }
+  // response is not an async iterable; read the full audio and send it once
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBase64 = Buffer.from(arrayBuffer).toString("base64");
+  ws.send(
+    JSON.stringify({
+      type: "tts_audio_chunk",
+      audio: audioBase64,
+    })
+  );
 }
