@@ -1,5 +1,6 @@
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
+import * as fs from "expo-file-system/legacy"
 
 let isPlaying = false;
 const queue: string[] = [];
@@ -17,10 +18,10 @@ async function playNext() {
 
   isPlaying = true;
   const chunk = queue.shift()!;
-  const uri = FileSystem.cacheDirectory + `tts_${Date.now()}.wav`;
+  const uri = FileSystem.Directory  + `tts_${Date.now()}.wav`;
 
-  await FileSystem.writeAsStringAsync(uri, chunk, {
-    encoding: FileSystem.EncodingType.Base64,
+  await fs.writeAsStringAsync(uri, chunk, {
+    encoding: fs.EncodingType.Base64,
   });
 
   const sound = new Audio.Sound();
