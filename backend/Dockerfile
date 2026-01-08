@@ -7,9 +7,9 @@ COPY package*.json ./
 RUN npm ci
 
 COPY tsconfig.json ./
-COPY . .
+COPY src ./src
 
-RUN npm install
+RUN npm run build
 
 
 # ---------- Runtime stage ----------
@@ -21,12 +21,9 @@ ENV NODE_ENV=production
 
 COPY package*.json ./
 RUN npm ci --omit=dev
-RUN npm install expo-cli
-RUN npm install --save-dev typescript@~5.9.2 @types/react-native
-RUN npm install
 
-COPY --from=builder /app/. .
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 8080
 
-CMD ["npx", "expo start"]
+CMD ["node", "dist/server.js"]
